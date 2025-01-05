@@ -48,6 +48,15 @@ def test_login_no_data(client):
     assert response.json['message'] == "Invalid credentials"
 
 
+def test_login_required_decorator():
+    def mock_protected_route():
+        return "Protected"
+    decorated = login_required(mock_protected_route)
+    with app.test_request_context():
+        session['user'] = {"id": "test_user", "role": "voter"}
+        result = decorated()
+    assert result == "Protected"
+
 
 def test_admin_required_decorator():
     def mock_protected_route():
