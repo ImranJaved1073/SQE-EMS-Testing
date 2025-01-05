@@ -1,4 +1,4 @@
-# EMS CI/CD Pipeline Documentation
+# EMS Jenkins CI/CD Pipeline for Automated Testing and Deployment
 
 ## **Overview**
 This repository contains the Continuous Integration and Continuous Deployment (CI/CD) pipeline for the EMS (Emergency Management System) project. The pipeline is set up using **Jenkins** to automate the processes of building, testing, and deploying the application.
