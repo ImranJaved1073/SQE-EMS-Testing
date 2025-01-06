@@ -57,6 +57,7 @@ def test_login_required_decorator():
         result = decorated()
     assert result == "Protected"
 
+
 def test_admin_required_decorator():
     def mock_protected_route():
         return "Admin Protected"
