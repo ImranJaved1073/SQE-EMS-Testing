@@ -51,7 +51,7 @@
         <!-- Navigation Tabs -->
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="voters-tab" data-bs-toggle="tab" data-bs-target="#voters"
+                <button class="nav-link active" id="voters-tab" data-bs-toggle="tab" data-bs-target="#voter-table"
                     type="button" role="tab">Voter Management</button>
             </li>
             <li class="nav-item" role="presentation">
@@ -74,34 +74,40 @@
 
         <div class="tab-content" id="myTabContent">
             <!-- Voter Management -->
-            <div class="tab-pane fade show active" id="voters" role="tabpanel">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Register a Voter</h5>
-                        <form id="voterForm">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <label for="voterName" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="voterName" required>
+            <div class="modal fade" id="voterModal" tabindex="-1" aria-labelledby="voterModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="voterModalLabel">Register a Voter</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="voterForm">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="voterName" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="voterName" required>
+                                    </div>
                                 </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="voterCnic" class="form-label">CNIC</label>
-                                    <input type="text" class="form-control" id="voterCnic" required>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="voterCnic" class="form-label">CNIC</label>
+                                        <input type="text" class="form-control" id="voterCnic" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="voterDob" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="voterDob" required>
+                                    </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="voterDob" class="form-label">Date of Birth</label>
-                                    <input type="date" class="form-control" id="voterDob" required>
-                                </div>
-
-                            </div>
-                            <button type="submit" class="btn btn-dark">Register Voter</button>
-                        </form>
+                                <button type="submit" class="btn btn-dark">Register Voter</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
+                
+            <!-- Bootstrap Modal for Voter Registration -->
+            
 
             <!-- Candidate Management -->
             <div class="tab-pane fade" id="candidates-table" role="tabpanel">
@@ -139,6 +145,29 @@
                 </div>
             </div>
 
+            <!-- Voter table-->
+            <!-- Voter List -->
+            <div class="tab-pane fade show active" id="voter-table" role="tabpanel">
+                <div class="card">
+                    <div class="card-body">
+                        <button id="Add_voter" class="btn btn-warning mt-3">Add voter</button>
+                        <h5 class="card-title mt-4">All Voters</h5>
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">CNIC</th>
+                                    <th scope="col">Date of Birth</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="voterList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
             <!-- Bootstrap Modal for Candidate Management -->
             <div class="modal fade" id="candidateModal" tabindex="-1" aria-labelledby="candidateModalLabel"
@@ -220,6 +249,41 @@
                 </div>
             </div>
 
+            <!-- Bootstrap Modal for Editing a Voter -->
+            <div class="modal fade" id="editVoterModal" tabindex="-1" aria-labelledby="editVoterModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editVoterModalLabel">Edit Voter</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editVoterForm">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="editVoterName" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="editVoterName" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editVoterCnic" class="form-label">CNIC</label>
+                                        <input type="text" class="form-control" id="editVoterCnic" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="editVoterDob" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="editVoterDob" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
             <!-- Election Scheduling -->
@@ -360,7 +424,64 @@
 
                 const result = await response.json();
                 alert(result.message);
+                loadVoters();
             });
+
+            // Handle voter deletion
+            async function deleteVoter(voterId) {
+                // Show confirmation modal
+                const confirmation = confirm("Are you sure you want to delete this voter?");
+                if (!confirmation) return;
+
+                const response = await fetch(`/delete_voter/${voterId}`, {
+                    method: "DELETE",
+                });
+
+                const result = await response.json();
+                alert(result.message);
+                loadVoters();
+            }
+
+            // Handle voter editing
+            async function editVoter(voterId) {
+                // Fetch voter details
+                const response = await fetch(`/get_voter/${voterId}`, { method: "GET" });
+                const result = await response.json();
+
+                if (result.success) {
+                    const voter = result.data;
+
+                    // Populate modal with voter details
+                    document.getElementById("editVoterName").value = voter.name;
+                    document.getElementById("editVoterCnic").value = voter.cnic;
+                    document.getElementById("editVoterDob").value = voter.dob;
+
+                    // Show modal
+                    const editModal = new bootstrap.Modal(document.getElementById("editVoterModal"));
+                    editModal.show();
+
+                    // Handle form submission
+                    document.getElementById("editVoterForm").onsubmit = async (e) => {
+                        e.preventDefault();
+                        const name = document.getElementById("editVoterName").value;
+                        const cnic = document.getElementById("editVoterCnic").value;
+                        const dob = document.getElementById("editVoterDob").value;
+
+                        const updateResponse = await fetch(`/edit_voter/${voterId}`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ name, cnic, dob }),
+                        });
+
+                        const updateResult = await updateResponse.json();
+                        alert(updateResult.message);
+                        loadVoters();
+                        editModal.hide();
+                    };
+                } else {
+                    alert(result.message);
+                }
+            }
 
             // Handle candidate addition
             document.getElementById("candidateForm").addEventListener("submit", async (e) => {
@@ -695,6 +816,33 @@
                 }
             }
 
+            // Handle voter list retrieval
+            async function loadVoters() {
+                const response = await fetch("/get_voters", { method: "GET" });
+                const result = await response.json();
+
+                if (result.success) {
+                    const voterList = document.getElementById("voterList");
+                    voterList.innerHTML = "";
+                    result.data.forEach((voter, index) => {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <th scope="row">${index + 1}</th>
+                            <td>${voter.name}</td>
+                            <td>${voter.cnic}</td>
+                            <td>${voter.dob}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="editVoter('${voter.voter_id}')">Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteVoter('${voter.voter_id}')">Delete</button>
+                            </td>
+                        `;
+                        voterList.appendChild(tr);
+                    });
+                } else {
+                    alert(result.message);
+                }
+            }
+
             document.getElementById("results-tab").addEventListener("click", () => {
                 loadAvailableElections();
             });
@@ -712,14 +860,29 @@
                 loadAllCandidates();
             });
 
+            //reterive element id voterList and fill it with voter list
+            loadVoters();
+
+
             //when add candidate from candidates list is clcked then open add candidate modal
             document.getElementById("Add_candidate").addEventListener("click", () => {
                 const candidateModal = new bootstrap.Modal(document.getElementById("candidateModal"));
                 candidateModal.show();
             });
+
+            //when add voter from voters list is clcked then open add voter modal
+            document.getElementById("Add_voter").addEventListener("click", () => {
+                const voterModal = new bootstrap.Modal(document.getElementById("voterModal"));
+                voterModal.show();
+            });
+            
             //when edit candidate from candidates list is clcked then open edit candidate modal
             window.editCandidate = editCandidate;
             window.deleteCandidate = deleteCandidate;
+
+            //when edit voter from voters list is clcked then open edit voter modal
+            window.editVoter = editVoter;
+            window.deleteVoter = deleteVoter;
 
             window.editElection = editElection;
             window.deleteElection = deleteElection;

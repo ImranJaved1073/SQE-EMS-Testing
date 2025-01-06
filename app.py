@@ -86,6 +86,61 @@ def register_voter():
     mongo.db.voters.insert_one({"name": name, "cnic": cnic, "dob": dob, "age": age, "voted": False})
     return format_response(True, "Voter registered successfully.")
 
+# Get all voters
+@app.route('/get_voters', methods=['GET'])
+@admin_required
+def get_voters():
+    voters = mongo.db.voters.find()
+    voter_list = [{"voter_id": str(voter["_id"]), "name": voter["name"], "cnic": voter["cnic"],"dob": voter["dob"]} for voter in voters]
+    return format_response(True, "Voters retrieved successfully.", voter_list)
+
+# Get voter details
+@app.route('/get_voter/<voter_id>', methods=['GET'])
+@admin_required
+def get_voter(voter_id):
+    voter = mongo.db.voters.find_one({"_id": ObjectId(voter_id)})
+    if not voter:
+        return format_response(False, "Voter not found.")
+
+    voter_data = {
+        "name": voter["name"],
+        "cnic": voter["cnic"],
+        "dob": voter["dob"]
+    }
+    return format_response(True, "Voter details retrieved successfully.", voter_data)
+
+# Edit voter details
+@app.route('/edit_voter/<voter_id>', methods=['PUT'])
+@admin_required
+def edit_voter(voter_id):
+    data = request.json
+    name = data.get('name')
+    cnic = data.get('cnic')
+    dob = data.get('dob')
+
+    dob_date = datetime.strptime(dob, "%Y-%m-%d")
+    age = (datetime.now() - dob_date).days // 365
+
+    if age < 18:
+        return format_response(False, "Voter must be at least 18 years old.")
+
+    result = mongo.db.voters.update_one(
+        {"_id": ObjectId(voter_id)},
+        {"$set": {"name": name, "cnic": cnic, "dob": dob, "age": age}}
+    )
+    if result.matched_count == 0:
+        return format_response(False, "Voter not found.")
+    return format_response(True, "Voter updated successfully.")
+
+# Delete voter
+@app.route('/delete_voter/<voter_id>', methods=['DELETE'])
+@admin_required
+def delete_voter(voter_id):
+    result = mongo.db.voters.delete_one({"_id": ObjectId(voter_id)})
+    if result.deleted_count == 0:
+        return format_response(False, "Voter not found.")
+    return format_response(True, "Voter deleted successfully.")
+
 # Candidate Management
 @app.route('/add_candidate', methods=['POST'])
 @admin_required
