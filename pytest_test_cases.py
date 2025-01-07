@@ -341,7 +341,7 @@ def test_register_voter_invalid_data(client):
     # Try registering a voter with invalid data
     response = client.post('/register_voter', json={
         "name": "John Doe",
-        "cnic": "12345",
+        "cnic": "asd",
         "dob": "2000-01-01"
     })
     print("Register response (invalid data):", response.json)

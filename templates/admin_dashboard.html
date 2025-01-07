@@ -604,13 +604,17 @@
                             const checkbox = document.createElement("div");
                             checkbox.className = "form-check";
                             checkbox.innerHTML = `
-                                <input class="form-check-input" type="checkbox" value="${candidate.candidate_id}" id="edit_candidate_${candidate.candidate_id}" ${election.candidate_ids && election.candidate_ids.includes(candidate.candidate_id) ? "checked" : ""}>
+                                <input class="form-check-input" type="checkbox" value="${candidate.candidate_id}" id="edit_candidate_${candidate.candidate_id}" ${election.candidates.includes(candidate.candidate_id) ? "checked" : ""}>
                                 <label class="form-check-label" for="edit_candidate_${candidate.candidate_id}">
                                     ${candidate.name} (${candidate.party})
                                 </label>
                             `;
                             candidateCheckboxes.appendChild(checkbox);
                         });
+                    }
+
+                    else{
+                        console.log("error");
                     }
 
                     // Show modal

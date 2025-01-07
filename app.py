@@ -74,7 +74,10 @@ def register_voter():
     name = data.get('name')
     cnic = data.get('cnic')
     dob = data.get('dob')
-
+    
+    if not cnic.isdigit():
+        return format_response(False, "CNIC must be a valid number.")
+    
     dob_date = datetime.strptime(dob, "%Y-%m-%d")
     age = (datetime.now() - dob_date).days // 365
 
@@ -195,11 +198,16 @@ def edit_candidate(candidate_id):
 @app.route('/delete_candidate/<candidate_id>', methods=['DELETE'])
 @admin_required
 def delete_candidate(candidate_id):
+    # Check if the candidate is part of any election
+    election = mongo.db.elections.find_one({"candidates._id": candidate_id})
+    if election:
+        return format_response(False, "Candidate cannot be deleted as they are part of an election.")
+    
     result = mongo.db.candidates.delete_one({"_id": ObjectId(candidate_id)})
     if result.deleted_count == 0:
         return format_response(False, "Candidate not found.")
     return format_response(True, "Candidate deleted successfully.")
-
+    
 
 # Get all candidates
 @app.route('/get_candidates', methods=['GET'])
