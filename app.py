@@ -1,10 +1,16 @@
-from flask import Flask, request, jsonify, render_template, session, redirect, url_for
-from flask_pymongo import PyMongo
+"""
+This module implements the backend logic for the Election Management System (EMS),
+including user management, voter registration, election scheduling, and voting functionality.
+"""
+
+import os
 from datetime import datetime
 from functools import wraps
+from flask import Flask, request, jsonify, render_template, session, redirect, url_for
+from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
-import os
+
 
 load_dotenv()
 
@@ -329,39 +335,40 @@ def delete_election(election_id):
 @app.route('/cast_vote', methods=['POST'])
 @login_required
 def cast_vote():
+    """
+    Allows a voter to cast their vote in an active election.
+
+    Returns:
+        Response: JSON response indicating success or failure.
+    """
     if session['user']['role'] == 'admin':
         return format_response(False, "Admins are not allowed to cast votes.")
-    
+
     data = request.json
     voter_id = session['user']['id']
     election_id = data.get('election_id')
     candidate_id = data.get('candidate_id')
 
-    voter = mongo.db.voters.find_one({"cnic": voter_id})
-    if not voter:
-        return format_response(False, "Voter not registered.")
-    
-    # Check if the voter has already voted in this election
-    if mongo.db.elections.find_one({"_id": ObjectId(election_id), f"votes.{voter_id}": {"$exists": True}}):
-        return format_response(False, "Voter has already cast a vote in this election.")
-
     election = mongo.db.elections.find_one({"_id": ObjectId(election_id)})
     if not election:
         return format_response(False, "Election not found.")
-
-    candidate = mongo.db.candidates.find_one({"_id": ObjectId(candidate_id)})
-    if not candidate:
-        return format_response(False, "Candidate not found.")
 
     current_time = datetime.now()
     if current_time < election['start_date'] or current_time > election['end_date']:
         return format_response(False, "Election is not active.")
 
-    votes = election.get('votes', {})
-    votes[candidate_id] = votes.get(candidate_id, 0) + 1
-    votes[voter_id] = True  # Mark that the voter has voted in this election
-    mongo.db.elections.update_one({"_id": ObjectId(election_id)}, {"$set": {"votes": votes}})
+    # Check if the voter has already voted in this election
+    if mongo.db.elections.find_one({"_id": ObjectId(election_id), f"votes.{voter_id}": {"$exists": True}}):
+        return format_response(False, "Voter has already cast a vote in this election.")
 
+    candidate = mongo.db.candidates.find_one({"_id": ObjectId(candidate_id)})
+    if not candidate:
+        return format_response(False, "Candidate not found.")
+
+    mongo.db.elections.update_one(
+        {"_id": ObjectId(election_id)},
+        {"$inc": {f"votes.{candidate_id}": 1}, "$set": {f"votes.{voter_id}": True}}
+    )
     return format_response(True, "Vote cast successfully.")
 
 # Results and Analytics
@@ -433,6 +440,12 @@ def get_election(election_id):
     return format_response(True, "Election details retrieved successfully.", election_data)
 
 def access_denied():
+    """
+    Renders the access denied page.
+
+    Returns:
+        Response: Rendered HTML page.
+    """
     return render_template('access_denied.html'), 403
 
 # Admin Dashboard
