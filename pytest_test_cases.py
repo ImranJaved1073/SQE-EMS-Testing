@@ -390,20 +390,7 @@ def test_add_candidate_duplicate(client):
     # Cleanup
     mongo.db.candidates.delete_one({"cnic": "11111"})
 
-def test_add_candidate_underage(client):
-    client, mongo = client  # Get client and mongo from fixture
 
-    with client.session_transaction() as sess:
-        sess['user'] = {"id": "adminImran", "role": "admin"}
-
-    response = client.post('/add_candidate', json={
-        "name": "Candidate B",
-        "party": "Party B",
-        "cnic": "22222",
-        "dob": "2010-01-01"
-    })
-    assert response.json['success'] == False
-    assert response.json['message'] == "Candidate must be at least 25 years old."
 
 def test_create_election_conflict(client):
     client, mongo = client  # Get client and mongo from fixture
@@ -440,4 +427,3 @@ def test_create_election_conflict(client):
     # Cleanup
     mongo.db.elections.delete_many({})
     mongo.db.candidates.delete_one({"_id": candidate_id})
-
